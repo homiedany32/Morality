@@ -7,6 +7,7 @@ var backdrop = 0;
 var Morality = [0, 0, 0, 0, 0, 0, 0, 0];
 var ev = 0;
 var Story = 1;
+var End = 0;
 
 requestAnimationFrame(draw);
 
@@ -15,10 +16,11 @@ function draw() {
     background("black");
     if (loading == 0 || loading == 2) {
         if (Story == 1) {
-
             if (backdrop == 0) {
                 title();
-                story("", 0, "Start", 1, "Begin", 1)
+                story("", 0, "New Game", 1, "Continue", 1)
+            } else if  (backdrop == -2) {
+                About()
             } else {
                 story("Dog", 1, "Inspect", 2, "Glance", 2)
                 story("Fluffy", 2, "Pet", 30, "Kick", 3)
@@ -56,7 +58,7 @@ function draw() {
 
                 story("Happy", 30, "Collar?", 31, "Feed", 32)
                 story("Collarless", 31, "Neglect", 0, "Feed", 32)
-                story("Hungry", 32, "Meat", 33, "Chocolate", 14)
+                story("Hungry", 32, "Meat", 33, "Bone", 33)
                 story("Devoured", 33, "Pet", 34, "Scratch", 34)
                 story("Excited", 34, "Friend?", 35, "Companion?", 35)
                 story("Both", 35, "Walk", 36, "Home", 36)
@@ -66,7 +68,7 @@ function draw() {
         } else if (Story == 2) {
             if (backdrop == 0) {
                 title();
-                story("", 0, "Start", 1, "Begin", 1)
+                story("", 0, "New Game", -1, "Continue", 1)
             } else {
                 if (Morality[0] == 2) {
                     story("Dog", 1, "Inspect", 2, "Glance", 2)
@@ -204,7 +206,7 @@ function draw() {
         } else if (Story == 3) {
             if (backdrop == 0) {
                 title();
-                story("", 0, "Start", 1, "Begin", 1)
+                story("", 0, "New Game", -1, "Continue", 1)
             } else {
                 story("Awake?", 1, "Where?", 2, "What?", 2)
                 story("Letter", 2, "Open", 3, "Ignore", 4)
@@ -254,7 +256,7 @@ function draw() {
         } else if (Story == 4) {
             if (backdrop == 0) {
                 title();
-                story("", 0, "Start", 1, "Begin", 1)
+                story("", 0, "New Game", -1, "Continue", 1)
             } else {
                 story("Marching", 1, "What?", 2, "Self?", 3)
                 story("Deployment", 2, "Self?", 3, "Where?", 4)
@@ -315,7 +317,7 @@ function draw() {
         } else if (Story == 5) {
             if (backdrop == 0) {
                 title();
-                story("", 0, "Start", 1, "Begin", 1)
+                story("", 0, "New Game", -1, "Continue", 1)
             } else {
                 story("Emergncy!", 1, "What?", 2, "Where?", 3)
                 story("Robbery", 2, "Where?", 3, "Go", 4)
@@ -345,7 +347,7 @@ function draw() {
         } else if (Story == 6) {
             if (backdrop == 0) {
                 title();
-                story("", 0, "Start", 1, "Begin", 1)
+                story("", 0, "New Game", -1, "Continue", 1)
             } else {
                 story("Protest", 1, "Where?", 2, "Self?", 3)
                 story("City Hall", 2, "Self?", 3, "What?", 4)
@@ -407,6 +409,18 @@ function draw() {
                 story("As Long", 18, "As", 0, "Possible", 0)
                 story("As Long", 19, "As", 0, "Possible", 0)
             }
+        } else if (Story == 7) {
+            if (backdrop == 0) {
+                title();
+                story("", 0, "New Game", -1, "Continue", 1)
+            } else {
+                story()
+            }
+        }
+        if (backdrop == -1) {
+            Morality = [0, 0, 0, 0, 0, 0, 0, 0];
+            Story = 1;
+            backdrop = 0;
         }
     }
     moralityCount()
@@ -421,31 +435,43 @@ function next(event) {
         loading = 2
         if (backdrop == 13 && event.keyCode == 50 && Story == 1) {
             setTimeout(load, 3000)
+        } else if (backdrop == -2 && event.keyCode == 49) {
+            loading = 1
+            backdrop = 0
+            setTimeout(load, 1000)
         } else {
             setTimeout(load, 1000)
         }
+    } else if (event.keyCode == 51 && Story == 1 && backdrop == 0) {
+        loading = 1
+        backdrop = -2
+        setTimeout(load, 1000)  
     }
 }
 
 function moralityCount() {
     if (Morality[0] != 0 && backdrop == 0) {
-       if (Morality[1] != 0) {
-           if (Morality[2] != 0) {
+        if (Morality[1] != 0) {
+            if (Morality[2] != 0) {
                 if (Morality[3] != 0) {
                     if (Morality[4] != 0) {
-                        Story = 6
-                   } else {
+                        if (Morality[5] != 0) {
+                            Story = 7
+                        } else {
+                            Story = 6
+                        }
+                    } else {
                         Story = 5
-                   }
-               } else {
+                    }
+                } else {
                     Story = 4
-               }
-           } else {
+                }
+            } else {
                 Story = 3
-           }
-       } else {
+            }
+        } else {
             Story = 2
-       }
+        }
     }
 {
     if (backdrop == 10 && Story == 1) {
@@ -562,7 +588,7 @@ function title() {
         stroke("green")
     } else if (Morality[1] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[1] == 3) {
         stroke("black")
     }
     text("o", (cnv.width / 2) - 60, 200, "stroke", "100px Georgia");
@@ -572,7 +598,7 @@ function title() {
         stroke("green")
     } else if (Morality[2] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[2] == 3) {
         stroke("black")
     }
     text("r", (cnv.width / 2) - 5, 200, "stroke", "100px Georgia");
@@ -582,7 +608,7 @@ function title() {
         stroke("green");
     } else if (Morality[3] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[3] == 3) {
         stroke("black")
     }
     text("a", (cnv.width / 2) + 35, 200, "stroke", "100px Georgia");
@@ -592,7 +618,7 @@ function title() {
         stroke("green")
     } else if (Morality[4] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[4] == 3) {
         stroke("black")
     }
     text("l", (cnv.width / 2) + 90, 200, "stroke", "100px Georgia");
@@ -602,7 +628,7 @@ function title() {
         stroke("green")
     } else if (Morality[5] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[5] == 3) {
         stroke("black")
     }
     text("i", (cnv.width / 2) + 120, 200, "stroke", "100px Georgia");
@@ -612,7 +638,7 @@ function title() {
         stroke("green")
     } else if (Morality[6] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[6] == 3) {
         stroke("black")
     }
     text("t", (cnv.width / 2) + 150, 200, "stroke", "100px Georgia");
@@ -622,10 +648,17 @@ function title() {
         stroke("green")
     } else if (Morality[7] == 2) {
         stroke("red")
-    } else if (Morality[0] == 3) {
+    } else if (Morality[7] == 3) {
         stroke("black")
     }
     text("y", (cnv.width / 2) + 195, 200, "stroke", "100px Georgia");
+    if (Story == 1 && backdrop == 0) {
+        stroke("white");
+        text("3: About", (cnv.width / 2) - 200, 600, "stroke", "50px Arial");
+    }
+    
+
+
 }
 
 function textList(title, option1, option2) {
@@ -637,5 +670,36 @@ function textList(title, option1, option2) {
     } else {
         text("1: " + option1, (cnv.width / 2) - 200, 400, "stroke", "50px Arial");
         text("2: " + option2, (cnv.width / 2) - 200, 500, "stroke", "50px Arial");
+    }
+}
+
+function About() {
+    if (End == 0) {
+        stroke("#8d8d8d")
+        text("The world is a dark place to live", (cnv.width / 2) - 550, 130, "stroke", "70px Arial")
+        stroke("white")
+        text("Choices lie beyond this frame", (cnv.width / 2) - 400, 200, "stroke", "35px Arial")
+        text("But not all choices Diverge into differing paths", (cnv.width / 2) - 300, 250, "stroke", "30px, Arial")
+        stroke("#dfdfdf")
+        text("All your choices reflect into reality", (cnv.width / 2), 280, "stroke", "25px Arial")
+        stroke("#bfbfbf")
+        text("Whether you'd like it or not", (cnv.width / 2) - 10, 305, "stroke", "20px Arial")
+        fill("#bfbfbf")
+        text("Nothing in life", (cnv.width / 2) - 50, 320, "fill", "17px Airal")
+        text("Is simple", (cnv.width / 2) - 100, 330, "fill", "14px Arial")
+        fill("#a9a9a9")
+        text("The only thing you can do now...", (cnv.width / 2) - 150, 340, "fill","13px Arial")
+        text("Is keep running", (cnv.width / 2) -  170, 350, "fill", "11px Arial")
+        text("And don't look back", (cnv.width / 2) - 180, 360, "fill", "9px Arial")
+        fill("#8d8d8d")
+        text("You're all alone", (cnv.width / 2) - 190, 370, "fill", "8px Arial")
+        text("Where do you go?", (cnv.width / 2) - 180, 378, "fill", "7px Arial")
+        fill("#696969")
+        text("Falling down forever", (cnv.width / 2) - 170, 384, "fill", "6px Arial")
+        text("Alone", (cnv.width / 2) - 165, 390, "fill", "5px Arial")
+        text("Alone", (cnv.width / 2) - 160, 395, "fill", "4px Arial")
+        text("Alone", (cnv.width / 2) - 155, 400, "fill", "3px Arial")
+        text("Alone", (cnv.width / 2) - 150, 405, "fill", "2px Arial")
+        text("Alone", (cnv.width / 2) - 155, 410, "fill", "1px Arial")
     }
 }

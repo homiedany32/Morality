@@ -5,7 +5,7 @@
 let cnv = document.getElementById("my-canvas");
 let ctx = cnv.getContext("2d");
 cnv.width = screen.availWidth - 30
-cnv.height = screen.availHeight - 150
+cnv.height = screen.availHeight - 50
 
 /* Function List:
     modes:
